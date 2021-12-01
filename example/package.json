@@ -6,11 +6,14 @@
   "scripts": {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
-    "start": "react-native start"
+    "start": "react-native start --reset-cache"
   },
   "dependencies": {
     "react": "16.13.1",
-    "react-native": "0.63.4"
+    "react-native": "0.63.4",
+    "react-native-gesture-handler": "^1.10.3",
+    "react-native-reanimated": "^2.2.4",
+    "@miblanchard/react-native-slider": "^2.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.12.10",
