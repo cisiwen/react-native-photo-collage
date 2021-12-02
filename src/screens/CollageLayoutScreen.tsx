@@ -5,6 +5,7 @@ import {
   StyleSheet,
   View,
   Text,
+  Pressable,
 } from 'react-native';
 
 //import { ImageViewer } from './ImageViewer';
@@ -14,6 +15,7 @@ import { ControlBar, IControlBarProps } from '../components/ControlBar';
 import { ICollageLayout } from '../models/Collage';
 import Animated, {
   Easing,
+  useAnimatedStyle,
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
@@ -25,8 +27,12 @@ import {
 import { MCEventBus, MCEventType } from '../components/EventBus';
 import { ControlBorderRadius } from '../components/ControlBorderRadius';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { useRecordScreenZone } from 'react-native-record-screen-zone';
+export interface ICollageLayoutScreenProps {
+  mediasUri: string[];
+}
 
-export function TabTwoScreen() {
+export function CollageLayoutScreen(props: ICollageLayoutScreenProps) {
   let w: number, h: number, borderW: number, radius: number, spacing: number;
 
   w = h = Dimensions.get('screen').width;
@@ -41,7 +47,7 @@ export function TabTwoScreen() {
   let totalSpaceWidth = borderW * 2;
 
   let lists = Layout5(w, h, totalSpaceWidth);
-  let urls: string[] = [
+  let urls: string[] = props?.mediasUri ?? [
     'https://www.fsbus.com/wp-content/uploads/2016/02/0713084kx.jpg',
     'https://nimg.ws.126.net/?url=http%3A%2F%2Fdingyue.ws.126.net%2F2021%2F1115%2F51d76cebj00r2l9oq004wc000ku00tqg.jpg&thumbnail=650x2147483647&quality=80&type=jpg',
     'https://nimg.ws.126.net/?url=http%3A%2F%2Fdingyue.ws.126.net%2F2021%2F1115%2Feec49515j00r2l9oq0048c000ku00v9g.jpg&thumbnail=650x2147483647&quality=80&type=jpg',
@@ -77,7 +83,7 @@ export function TabTwoScreen() {
     if (newLayout) {
       GlobalSetting.newLayout = newLayout;
       defaultLayout5.items.forEach((a) => {
-        let newSetting = newLayout?.items.find((b) => b.id == a.id);
+        let newSetting = newLayout?.items.find((b) => b.id === a.id);
         newSetting.uri = a.uri;
         if (newSetting) {
           //a.resizerItem = newSetting.resizerItem;
@@ -154,17 +160,78 @@ export function TabTwoScreen() {
     },
     layouts: lists,
   };
+
+  const { startRecording, stopRecording, RecordScreenZone } =
+    useRecordScreenZone();
+
+  let recordBtnWidth = useSharedValue<number>(50);
+  let recordBtnRadius = useSharedValue<number>(50);
+  let recordButtonStyle = useAnimatedStyle(() => {
+    return {
+      width: recordBtnWidth.value,
+      height: recordBtnWidth.value,
+      borderRadius: recordBtnRadius.value,
+      backgroundColor: 'green',
+    };
+  });
+
+  const handleOnStartRecording = async () => {
+    recordBtnRadius.value = withTiming(0, {
+      duration: 100,
+      easing: Easing.elastic(),
+    });
+    recordBtnWidth.value = withTiming(20, {
+      duration: 100,
+      easing: Easing.elastic(),
+    });
+    let result = await startRecording();
+    console.log('handleOnStartRecording', result);
+  };
+
+  const handleOnStopRecording = async () => {
+    recordBtnRadius.value = withTiming(50, {
+      duration: 100,
+      easing: Easing.elastic(),
+    });
+    recordBtnWidth.value = withTiming(50, {
+      duration: 100,
+      easing: Easing.elastic(),
+    });
+    const res = await stopRecording();
+    if (res) {
+      console.log('handleOnStopRecording', res);
+    }
+  };
+
+  let isRecording: boolean = false;
+  const onRecordButtonPressed = () => {
+    if (!isRecording) {
+      isRecording = true;
+      handleOnStartRecording();
+    } else {
+      isRecording = false;
+      handleOnStopRecording();
+    }
+  };
+
   return (
     <GestureHandlerRootView style={styles.container}>
-      <View style={[styles.layoutContainer]}>
-        <Text style={[styles.textStyle]}>
-          山是水的温柔，天是地的厮守，谁为谁而等候。
-        </Text>
-        <View style={[styles.collageContainer]}>
-          <MediaCollage layout={defaultLayout5} />
+      <RecordScreenZone style={styles.container}>
+        <View style={[styles.layoutContainer]}>
+          <Text style={[styles.textStyle]}>
+            山是水的温柔，天是地的厮守，谁为谁而等候。
+          </Text>
+          <View style={[styles.collageContainer]}>
+            <MediaCollage layout={defaultLayout5} />
+          </View>
         </View>
-      </View>
+      </RecordScreenZone>
       <View style={[styles.controlContainer]}>
+        <View style={[styles.recordContainer]}>
+          <Pressable onPress={onRecordButtonPressed}>
+            <Animated.View style={[recordButtonStyle]} />
+          </Pressable>
+        </View>
         <ControlBorderRadius />
         <ControlBar data={data} />
       </View>
@@ -175,9 +242,20 @@ export function TabTwoScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 100,
     backgroundColor: '#000',
     overflow: 'visible',
+  },
+  recordContainer: {
+    padding: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+    flex: 1,
+  },
+  recordStartButton: {
+    width: 50,
+    height: 50,
+    borderRadius: 50,
+    backgroundColor: 'green',
   },
   layoutContainer: {
     flex: 1,
@@ -191,7 +269,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     zIndex: 5,
     color: '#212121',
-    fontSize: 20,
+    fontSize: 17,
     fontStyle: 'italic',
     fontWeight: '900',
     fontFamily: 'Chalkduster',
@@ -220,7 +298,7 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
     flexDirection: 'column',
     justifyContent: 'flex-end',
-    height: 200,
+    height: 250,
   },
   title: {
     fontSize: 20,

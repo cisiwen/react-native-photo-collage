@@ -9,4 +9,4 @@ export * from './components/ImageViewerV2';
 export * from './components/MediaCollage';
 export * from './components/ResizableView';
 export * from './components/SwappableViewItem';
-export * from './screens/TabTwoScreen';
+export * from './screens/CollageLayoutScreen';

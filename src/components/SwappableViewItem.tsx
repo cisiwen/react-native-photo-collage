@@ -10,7 +10,7 @@ import {
   TapGestureHandlerEventPayload,
   TapGestureHandlerGestureEvent,
 } from 'react-native-gesture-handler';
-import { StyleSheet, View } from 'react-native';
+import { Dimensions, StyleSheet, View } from 'react-native';
 import Animated, {
   Easing,
   measure,
@@ -135,6 +135,11 @@ export const SwappableViewItem = (props: ISwappableViewItemProps) => {
     } else if (evt.nativeEvent.state === State.ACTIVE) {
       let tranX = evt.nativeEvent.absoluteX - originW.value / 2 - originX.value;
       let tranY = evt.nativeEvent.absoluteY - originH.value / 2 - originY.value;
+      tranY = tranY - 30;
+      console.log(
+        'StatusBar height',
+        Dimensions.get('screen').height - Dimensions.get('window').height
+      );
       //console.log("onMoveGestureEvent", tranX, tranY, centerX.value, centerY.value, originW.value, originH.value, evt.nativeEvent.absoluteX, evt.nativeEvent.absoluteY, evt.nativeEvent.x, evt.nativeEvent.y);
       props.item.style.translateX.value =
         tranX + centerX.value + currentTranslateX;

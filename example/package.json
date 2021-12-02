@@ -9,11 +9,14 @@
     "start": "react-native start --reset-cache"
   },
   "dependencies": {
+    "@miblanchard/react-native-slider": "^2.0.2",
     "react": "16.13.1",
     "react-native": "0.63.4",
+    "react-native-ffmpeg": "^0.5.2",
     "react-native-gesture-handler": "^1.10.3",
     "react-native-reanimated": "^2.2.4",
-    "@miblanchard/react-native-slider": "^2.0.2"
+    "react-native-record-screen": "^0.3.2",
+    "react-native-record-screen-zone": "^0.1.1"
   },
   "devDependencies": {
     "@babel/core": "^7.12.10",

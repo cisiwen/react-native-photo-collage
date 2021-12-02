@@ -47,8 +47,8 @@
     "registry": "https://registry.npmjs.org/"
   },
   "devDependencies": {
-    "@miblanchard/react-native-slider": "^2.0.2",
     "@commitlint/config-conventional": "^11.0.0",
+    "@miblanchard/react-native-slider": "^2.0.2",
     "@react-native-community/eslint-config": "^2.0.0",
     "@release-it/conventional-changelog": "^2.0.0",
     "@types/jest": "^26.0.0",
@@ -65,17 +65,23 @@
     "react": "16.13.1",
     "react-native": "0.63.4",
     "react-native-builder-bob": "^0.18.0",
+    "react-native-ffmpeg": "^0.5.2",
     "react-native-gesture-handler": "^1.10.3",
     "react-native-reanimated": "^2.2.4",
+    "react-native-record-screen": "^0.3.2",
+    "react-native-record-screen-zone": "^0.1.1",
     "release-it": "^14.2.2",
     "typescript": "^4.1.3"
   },
   "peerDependencies": {
+    "@miblanchard/react-native-slider": "^2.0.2",
     "react": "16.13.1",
     "react-native": "~0.63.4",
+    "react-native-ffmpeg": "0.5.2",
     "react-native-gesture-handler": "^1.10.3",
     "react-native-reanimated": "^2.2.4",
-    "@miblanchard/react-native-slider": "^2.0.2"
+    "react-native-record-screen": "0.3.2",
+    "react-native-record-screen-zone": "0.1.1"
   },
   "jest": {
     "preset": "react-native",
