@@ -18,7 +18,9 @@ buildscript {
         // in the individual module build.gradle files
     }
 }
-
+ext {
+    ffmpegKitPackage = "full-gpl"
+}
 allprojects {
     repositories {
         mavenLocal()

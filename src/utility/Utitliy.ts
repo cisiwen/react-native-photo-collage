@@ -1,4 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
+import { LayoutRectangle, Dimensions, Platform, StatusBar } from 'react-native';
 import { useSharedValue } from 'react-native-reanimated';
 import {
   ICollageItem,
@@ -13,7 +14,7 @@ export const getValue = (
   percent: number,
   rootW: number = 411.4285583496094,
   rootH: number = 411.4285583496094,
-  borderWidth: number = 1,
+  borderWidth: number = 1
 ) => {
   let w = rootW - borderWidth;
   let h = rootH - borderWidth;
@@ -29,22 +30,22 @@ export const computeCollageResizerAll = (all: ICollageItem[]) => {
 
 export const computeCollageResizer = (
   item: ICollageItem,
-  all: ICollageItem[],
+  all: ICollageItem[]
 ) => {
   let resizerItem: IResizerItem = {
     id: item.id,
   };
-  let n = all.filter(a => a.id !== item.id);
+  let n = all.filter((a) => a.id !== item.id);
   let left = item.style.oriLeft;
   let top = item.style.oriTop;
   let right = left + item.style.oriWidth;
   let bottom = top + item.style.oriHeight;
   let topBottomLinks = n
-    .filter(a => Math.abs(a.style.oriTop + a.style.oriHeight - top) < 5)
-    ?.map(a => a.id);
+    .filter((a) => Math.abs(a.style.oriTop + a.style.oriHeight - top) < 5)
+    ?.map((a) => a.id);
   let topTopLinks = n
-    .filter(a => Math.abs(a.style.oriTop - top) < 5)
-    ?.map(a => a.id);
+    .filter((a) => Math.abs(a.style.oriTop - top) < 5)
+    ?.map((a) => a.id);
   resizerItem.topResizerPointLinks = {
     topIds: topTopLinks,
     bottomIds: topBottomLinks,
@@ -57,11 +58,11 @@ export const computeCollageResizer = (
   };
 
   let bottomTopLinks = n
-    .filter(a => Math.abs(a.style.oriTop - bottom) < 5)
-    ?.map(a => a.id);
+    .filter((a) => Math.abs(a.style.oriTop - bottom) < 5)
+    ?.map((a) => a.id);
   let bottomBottomLinks = n
-    .filter(a => Math.abs(a.style.oriTop + a.style.oriHeight - bottom) < 5)
-    ?.map(a => a.id);
+    .filter((a) => Math.abs(a.style.oriTop + a.style.oriHeight - bottom) < 5)
+    ?.map((a) => a.id);
   resizerItem.bottomResizerPointLinks = {
     topIds: bottomTopLinks,
     bottomIds: bottomBottomLinks,
@@ -74,11 +75,11 @@ export const computeCollageResizer = (
   };
 
   let leftLeftLinks = n
-    .filter(a => Math.abs(a.style.oriLeft - left) < 5)
-    ?.map(a => a.id);
+    .filter((a) => Math.abs(a.style.oriLeft - left) < 5)
+    ?.map((a) => a.id);
   let leftRightLinks = n
-    .filter(a => Math.abs(a.style.oriLeft + a.style.oriWidth - left) < 5)
-    ?.map(a => a.id);
+    .filter((a) => Math.abs(a.style.oriLeft + a.style.oriWidth - left) < 5)
+    ?.map((a) => a.id);
   resizerItem.leftResizerPointLinks = {
     leftIds: leftLeftLinks,
     rightIds: leftRightLinks,
@@ -89,11 +90,11 @@ export const computeCollageResizer = (
   };
 
   let rightLeftLink = n
-    .filter(a => Math.abs(a.style.oriLeft - right) < 5)
-    ?.map(a => a.id);
+    .filter((a) => Math.abs(a.style.oriLeft - right) < 5)
+    ?.map((a) => a.id);
   let rightRightLink = n
-    .filter(a => Math.abs(a.style.oriLeft + a.style.oriWidth - right) < 5)
-    ?.map(a => a.id);
+    .filter((a) => Math.abs(a.style.oriLeft + a.style.oriWidth - right) < 5)
+    ?.map((a) => a.id);
   resizerItem.rightResizerPointLinks = {
     leftIds: rightLeftLink,
     rightIds: rightRightLink,
@@ -109,7 +110,7 @@ export const collageLayoutToCollageItem = (
   layout: ICollageItemLayout[],
   w: number,
   h: number,
-  borderW: number,
+  borderW: number
 ): ICollageItem[] => {
   let items = layout.map((lout, i) => {
     let cItem: ICollageItem = {
@@ -136,7 +137,7 @@ export const computeCollageStyle = (
   w: number,
   h: number,
   borderW: number,
-  index: number,
+  index: number
 ): ICollageItemStyle => {
   let left = getValue(layout.percentLeft, w, h, borderW);
   let top = getValue(layout.percentTop, w, h, borderW);
@@ -197,12 +198,12 @@ export const computeLayouts = (layout: ICollageItem[], w: number, h: number, bor
 
 export const getLinkItemByIds = (
   layout: ICollageItem[],
-  ids?: number[],
+  ids?: number[]
 ): IPointStyleItem[] | undefined => {
   if (ids) {
     let output: IPointStyleItem[] = [];
-    ids.forEach(id => {
-      let item = layout.find(a => a.id == id);
+    ids.forEach((id) => {
+      let item = layout.find((a) => a.id == id);
       if (item) {
         output.push({
           height: item.style.height,
@@ -220,14 +221,14 @@ export const getLinkItemByIds = (
 
 export const findValues = (
   layout: ICollageItem[],
-  pointsLink?: IResizerPointLink,
+  pointsLink?: IResizerPointLink
 ) => {
   if (pointsLink) {
     let idsLooking = (ids?: number[]): IPointStyleItem[] | undefined => {
       if (ids) {
         let output: IPointStyleItem[] = [];
-        ids.forEach(id => {
-          let item = layout.find(a => a.id == id);
+        ids.forEach((id) => {
+          let item = layout.find((a) => a.id == id);
           if (item) {
             output.push({
               height: item.style.height,
@@ -249,10 +250,43 @@ export const findValues = (
   }
 };
 export const assignValue = (layout: ICollageItem[]) => {
-  layout.forEach(a => {
+  layout.forEach((a) => {
     findValues(layout, a.resizerItem.bottomResizerPointLinks);
     findValues(layout, a.resizerItem.topResizerPointLinks);
     findValues(layout, a.resizerItem.leftResizerPointLinks);
     findValues(layout, a.resizerItem.rightResizerPointLinks);
   });
+};
+
+export const createRandumFileName = (min: number = 100, max: number = 999) => {
+  return Math.floor(Math.random() * (max + 1 - min)) + min;
+};
+
+export const extractExtension = (file: string) => {
+  const parseFileName = file.split('.');
+  return parseFileName[parseFileName.length - 1];
+};
+
+export const createNewFilePath = (path: string) => {
+  const parsePath = path.split('/');
+  const fileName = parsePath[parsePath.length - 1];
+  parsePath[
+    parsePath.length - 1
+  ] = `${createRandumFileName()}.${extractExtension(fileName)}`;
+  return parsePath.join('/');
+};
+
+export const calcCropLayout = (layout: LayoutRectangle) => {
+  let { width, height, x, y } = layout;
+  const scale = Dimensions.get('window').scale;
+  if (Platform.OS === 'android') {
+    width = Math.ceil(layout.width * scale);
+    height = Math.ceil(layout.height * scale);
+    x = Math.ceil(layout.x * scale);
+    const statusbarHeight = StatusBar.currentHeight
+      ? StatusBar.currentHeight
+      : 0;
+    y = Math.ceil((layout.y + statusbarHeight) * scale);
+  }
+  return { width, height, x, y };
 };

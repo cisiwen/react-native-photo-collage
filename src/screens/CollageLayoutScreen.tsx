@@ -27,7 +27,7 @@ import {
 import { MCEventBus, MCEventType } from '../components/EventBus';
 import { ControlBorderRadius } from '../components/ControlBorderRadius';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { useRecordScreenZone } from 'react-native-record-screen-zone';
+import { useRecordScreenZone } from '../components/ViewRecorder';
 export interface ICollageLayoutScreenProps {
   mediasUri: string[];
 }
@@ -216,16 +216,14 @@ export function CollageLayoutScreen(props: ICollageLayoutScreenProps) {
 
   return (
     <GestureHandlerRootView style={styles.container}>
-      <RecordScreenZone style={styles.container}>
-        <View style={[styles.layoutContainer]}>
-          <Text style={[styles.textStyle]}>
-            山是水的温柔，天是地的厮守，谁为谁而等候。
-          </Text>
-          <View style={[styles.collageContainer]}>
-            <MediaCollage layout={defaultLayout5} />
-          </View>
-        </View>
-      </RecordScreenZone>
+      <View style={[styles.layoutContainer]}>
+        <Text style={[styles.textStyle]}>
+          山是水的温柔，天是地的厮守，谁为谁而等候。
+        </Text>
+        <RecordScreenZone style={[styles.collageContainer]}>
+          <MediaCollage layout={defaultLayout5} />
+        </RecordScreenZone>
+      </View>
       <View style={[styles.controlContainer]}>
         <View style={[styles.recordContainer]}>
           <Pressable onPress={onRecordButtonPressed}>
