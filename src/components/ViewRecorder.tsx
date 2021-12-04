@@ -10,9 +10,11 @@ import RecordScreen, {
   RecordingStartResponse,
   RecordingResponse,
 } from 'react-native-record-screen';
-import { createNewFilePath, calcCropLayout } from '../utility/Utitliy';
+import { createNewFilePath, calcCropLayout } from '../utility/RecorderUtility';
 
-interface Props extends ViewProps { }
+interface Props extends ViewProps {
+  width?: number;
+}
 
 type StartRecording = () => Promise<RecordingStartResponse>;
 type StopRecording = () => Promise<RecordingResponse>;
