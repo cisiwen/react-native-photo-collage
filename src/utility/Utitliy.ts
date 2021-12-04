@@ -142,8 +142,8 @@ export const computeCollageStyle = (
   let top = getValue(layout.percentTop, w, h, borderW);
   let height = getValue(layout.percentHeight, w, h, borderW);
   let width = getValue(layout.percentWidth, w, h, borderW);
-  let leftEdge = left == 0;
-  let topEdge = top == 0;
+  let leftEdge = left === 0;
+  let topEdge = top === 0;
   let bottomEdge = top + height > h - 5;
   let rightEdge = left + width > w - 5;
   let style: ICollageItemStyle = {
@@ -202,7 +202,7 @@ export const getLinkItemByIds = (
   if (ids) {
     let output: IPointStyleItem[] = [];
     ids.forEach((id) => {
-      let item = layout.find((a) => a.id == id);
+      let item = layout.find((a) => a.id === id);
       if (item) {
         output.push({
           height: item.style.height,
@@ -227,7 +227,7 @@ export const findValues = (
       if (ids) {
         let output: IPointStyleItem[] = [];
         ids.forEach((id) => {
-          let item = layout.find((a) => a.id == id);
+          let item = layout.find((a) => a.id === id);
           if (item) {
             output.push({
               height: item.style.height,
