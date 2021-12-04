@@ -1,6 +1,6 @@
 {
   "name": "react-native-photo-collage",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "photo collage component for react native",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
@@ -73,11 +73,11 @@
     "ffmpeg-kit-react-native": "^4.5.0"
   },
   "peerDependencies": {
-    "@miblanchard/react-native-slider": "^2.0.2",
-    "react-native-gesture-handler": "^1.10.3",
-    "react-native-reanimated": "^2.2.4",
-    "react-native-record-screen": "0.3.2",
-    "ffmpeg-kit-react-native": "^4.5.0"
+    "@miblanchard/react-native-slider": ">=2.0.2",
+    "react-native-gesture-handler": ">=1.10.3",
+    "react-native-reanimated": ">=2.2.4",
+    "react-native-record-screen": ">=0.3.2",
+    "ffmpeg-kit-react-native": ">=4.5.0"
   },
   "jest": {
     "preset": "react-native",
