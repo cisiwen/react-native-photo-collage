@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { CollageLayoutScreen } from 'react-native-photo-collage';
+import { CollageLayoutScreen, ImageViewer } from 'react-native-photo-collage';
 
 export default function App() {
   let urls: string[] = [
@@ -10,4 +10,5 @@ export default function App() {
     'https://www.popo8.com/host/data/202111/30/5/9a238d0.jpg',
   ];
   return <CollageLayoutScreen mediasUri={urls} />;
+  //return <ImageViewer />;
 }

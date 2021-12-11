@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
   },
   container: {
     backgroundColor: '#fff',
-    overflow: 'hidden',
+    overflow: 'visible',
     position: 'relative',
     flex: 1,
   },
@@ -53,6 +53,12 @@ export const ImageViewerV2 = (props: { url: string }) => {
   let translateYNumber: number = 0;
   let currentMaxTranslateX = useSharedValue(0);
   let currentMaxTranslateY = useSharedValue(0);
+
+  let width = useSharedValue<number>(0);
+  let height = useSharedValue<number>(0);
+  let srcWidth = useSharedValue<number>(0);
+  let srcHeight = useSharedValue<number>(0);
+
   const longPressed = useSharedValue(0);
   const onPanGestureHandlerV2 = useAnimatedGestureHandler({
     onStart: (_ev, ctx: any) => {
@@ -80,14 +86,27 @@ export const ImageViewerV2 = (props: { url: string }) => {
           if (y > 0) {
             y = 0;
           }
+        } else if (ev.translationY < 0) {
+          if (y < -ctx.maxTranY) {
+            y = -ctx.maxTranY;
+          }
         }
 
-        //(ev.translationX, ctx.offsetX, ctx.maxTranX, x);
+        console.log(
+          ev.translationX,
+          ev.translationY,
+          ctx.offsetX,
+          ctx.offsetY,
+          ctx.maxTranX,
+          ctx.maxTranY,
+          y,
+          x
+        );
 
         translateXNumber = x;
         translateYNumber = 0;
         translateX.value = x; //Math.abs(x) > Math.abs(currentMaxTranslateX.value) ? (x < 0 ? -Math.abs(currentMaxTranslateX.value) : Math.abs(currentMaxTranslateX.value)) : x;
-        translateY.value = 0;
+        translateY.value = y;
         //currentTranslateX.value = translateX.value;
       } else {
         console.log(`move me ${props.url}`);
@@ -105,12 +124,15 @@ export const ImageViewerV2 = (props: { url: string }) => {
       },
       onActive: (ev, ctx: any) => {
         let value = ctx.lastScale * ev.scale;
+        console.log('onPinchGestureHandler', value);
         scale.value = value < 1 ? 1 : value;
       },
     });
 
   const animatedStyles = useAnimatedStyle(() => {
     return {
+      width: width.value,
+      height: height.value,
       transform: [
         { scale: scale.value },
         { translateX: translateX.value },
@@ -119,11 +141,11 @@ export const ImageViewerV2 = (props: { url: string }) => {
     };
   });
 
-  let [width, setWidth] = useState<number>(0);
-  let [height, setHeight] = useState<number>(0);
+  //let [width, setWidth] = useState<number>(0);
+  //let [height, setHeight] = useState<number>(0);
 
-  let [srcWidth, setSrcWidth] = useState<number>(0);
-  let [srcHeight, setSrcHeight] = useState<number>(0);
+  //let [srcWidth, setSrcWidth] = useState<number>(0);
+  //let [srcHeight, setSrcHeight] = useState<number>(0);
 
   let containerWidth: number = 0;
   let containerHeight: number = 0;
@@ -136,18 +158,25 @@ export const ImageViewerV2 = (props: { url: string }) => {
   const onLayoutChange = (layout: LayoutChangeEvent) => {
     containerWidth = layout.nativeEvent.layout.width;
     containerHeight = layout.nativeEvent.layout.height;
-    constraintDimension(srcWidth, srcHeight, containerWidth, containerHeight);
+    constraintDimension(
+      srcWidth.value,
+      srcHeight.value,
+      containerWidth,
+      containerHeight,
+      'onLayoutChange'
+    );
   };
   const onImageLoaded = (evt: NativeSyntheticEvent<ImageLoadEventData>) => {
     imageWidth = evt.nativeEvent.source.width;
     imageHeight = evt.nativeEvent.source.height;
-    setSrcWidth(imageWidth);
-    setSrcHeight(imageHeight);
+    srcWidth.value = imageWidth;
+    srcHeight.value = imageHeight;
     constraintDimension(
       imageWidth,
       imageHeight,
       containerWidth,
-      containerHeight
+      containerHeight,
+      'onImageLoaded'
     );
   };
 
@@ -155,8 +184,10 @@ export const ImageViewerV2 = (props: { url: string }) => {
     imgW: number,
     imgH: number,
     cW: number,
-    cH: number
+    cH: number,
+    sender: string
   ) => {
+    console.log(sender, imgH, imgW, cW, cH);
     if (imgW > 0 && imgH > 0 && cW > 0 && cH > 0) {
       let newWidth: number = 0,
         newHeight: number = 0;
@@ -172,16 +203,23 @@ export const ImageViewerV2 = (props: { url: string }) => {
         newWidth = (newHeight / imgH) * imgW;
       }
 
-      setHeight(newHeight);
-      setWidth(newWidth);
+      //setHeight(newHeight);
+      //setWidth(newWidth);
+      width.value = newWidth;
+      height.value = newHeight;
       currentMaxTranslateX.value = newWidth - cW;
       currentMaxTranslateY.value = newHeight - cH;
       //console.log(constraintDimension.name, imgH, imgW, newHeight, newWidth, cH, cW);
 
-      if (translateX.value === 0) {
-        //translateX.value = (-currentMaxTranslateX.value / 2);
-        //translateY.value = (currentMaxTranslateY.value / 2);
-      }
+      translateX.value = (cW - newWidth) / 2;
+      translateY.value = (cH - newHeight) / 2;
+      console.log(
+        'translateY',
+        newHeight,
+        cH,
+        currentMaxTranslateY.value,
+        translateY.value
+      );
       //currentTranslateX.value= translateX.value;
     }
   };
@@ -224,8 +262,7 @@ export const ImageViewerV2 = (props: { url: string }) => {
               <Animated.Image
                 onLayout={onImageLayoutChange}
                 onLoad={onImageLoaded}
-                resizeMode={'cover'}
-                style={[styles.pinchableImage, animatedStyles]}
+                style={[animatedStyles]}
                 source={{ uri: props.url }}
               />
             </Animated.View>

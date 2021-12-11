@@ -13,3 +13,4 @@ export * from './components/ViewRecorder';
 export * from './components/ControlBorderRadius';
 export * from './utility/RecorderUtility';
 export * from './screens/CollageLayoutScreen';
+export * from './screens/ImageViewer';

@@ -26,6 +26,7 @@ export interface ISwappableViewItemProps {
   children: ReactNode;
   item: ICollageItem;
   allItems: ICollageItem[];
+  moveOnly?: boolean;
 }
 const UIStyle = StyleSheet.create({
   flexOne: {
@@ -42,7 +43,6 @@ export const SwappableViewItem = (props: ISwappableViewItemProps) => {
 
   let currentTranslateX: number;
   let currentTranslateY: number;
-
   const scale = useSharedValue(0);
 
   props.item.style.hitTestOpacity = useSharedValue(1);
@@ -84,7 +84,7 @@ export const SwappableViewItem = (props: ISwappableViewItemProps) => {
       currentTranslateY = props.item.style.translateY.value;
       setSelectedItem(props.item);
       let padding = Math.min(originH.value, originW.value) * 0.2;
-      scale.value = withTiming(padding, {
+      scale.value = withTiming(10, {
         duration: 300,
         easing: Easing.bezier(0.25, 0.1, 0.25, 1),
       });
@@ -145,7 +145,9 @@ export const SwappableViewItem = (props: ISwappableViewItemProps) => {
         tranX + centerX.value + currentTranslateX;
       props.item.style.translateY.value =
         tranY + centerY.value + currentTranslateY;
-      hitTest(evt);
+      if (!props.moveOnly) {
+        hitTest(evt);
+      }
       //console.log(originX.value, originY.value);
       //props.item.resizerItem.translateX.value = evt.nativeEvent.absoluteX - originW.value / 2 - originX.value;
       //props.item.resizerItem.translateY.value = evt.nativeEvent.absoluteY - originH.value / 2 - originY.value;
@@ -178,14 +180,16 @@ export const SwappableViewItem = (props: ISwappableViewItemProps) => {
   });
 
   const onDragEnded = () => {
-    props.item.style.translateX.value = withTiming(currentTranslateX, {
-      duration: 500,
-      easing: Easing.bezier(0.25, 0.1, 0.25, 1),
-    });
-    props.item.style.translateY.value = withTiming(currentTranslateY, {
-      duration: 500,
-      easing: Easing.bezier(0.25, 0.1, 0.25, 1),
-    });
+    if (!props.moveOnly) {
+      props.item.style.translateX.value = withTiming(currentTranslateX, {
+        duration: 500,
+        easing: Easing.bezier(0.25, 0.1, 0.25, 1),
+      });
+      props.item.style.translateY.value = withTiming(currentTranslateY, {
+        duration: 500,
+        easing: Easing.bezier(0.25, 0.1, 0.25, 1),
+      });
+    }
     originH.value = 0;
     originW.value = 0;
     originX.value = 0;
@@ -196,24 +200,26 @@ export const SwappableViewItem = (props: ISwappableViewItemProps) => {
       duration: 300,
       easing: Easing.bezier(0.25, 0.1, 0.25, 1),
     });
-    props.allItems.forEach((a) => {
-      if (a.style.hitTestOpacity) {
-        a.style.hitTestOpacity.value = 1;
-      }
-    });
-    if (hitTarget) {
-      if (hitTarget.setUrlState && props.item.setUrlState) {
-        let targetUrl = hitTarget.uriShareValue?.value;
-        if (targetUrl) {
-          let myUrl = props.item.uriShareValue?.value;
-          if (myUrl) {
-            hitTarget.setUrlState(myUrl);
-            props.item.setUrlState(targetUrl);
-            if (props.item.uriShareValue) {
-              props.item.uriShareValue.value = targetUrl;
-            }
-            if (hitTarget.uriShareValue) {
-              hitTarget.uriShareValue.value = myUrl;
+    if (!props.moveOnly) {
+      props.allItems.forEach((a) => {
+        if (a.style.hitTestOpacity) {
+          a.style.hitTestOpacity.value = 1;
+        }
+      });
+      if (hitTarget) {
+        if (hitTarget.setUrlState && props.item.setUrlState) {
+          let targetUrl = hitTarget.uriShareValue?.value;
+          if (targetUrl) {
+            let myUrl = props.item.uriShareValue?.value;
+            if (myUrl) {
+              hitTarget.setUrlState(myUrl);
+              props.item.setUrlState(targetUrl);
+              if (props.item.uriShareValue) {
+                props.item.uriShareValue.value = targetUrl;
+              }
+              if (hitTarget.uriShareValue) {
+                hitTarget.uriShareValue.value = myUrl;
+              }
             }
           }
         }

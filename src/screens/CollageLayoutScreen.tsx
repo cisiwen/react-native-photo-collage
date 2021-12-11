@@ -12,7 +12,7 @@ import {
 import { MediaCollage } from '../components/MediaCollage';
 import { Layout5, Layout5_W2W2W2W2W1 } from '../layouts/Layout5Items';
 import { ControlBar, IControlBarProps } from '../components/ControlBar';
-import { ICollageLayout } from '../models/Collage';
+import { ICollageLayout, ICollageItem } from '../models/Collage';
 import Animated, {
   Easing,
   useAnimatedStyle,
@@ -28,6 +28,9 @@ import { MCEventBus, MCEventType } from '../components/EventBus';
 import { ControlBorderRadius } from '../components/ControlBorderRadius';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useRecordScreenZone } from '../components/ViewRecorder';
+import { MoveResizeView } from '../components/MoveResizeView';
+import { TextTopAndBottomLayout } from '../layouts/TextLayout2Item';
+import { EditableText } from '../components/EditableText';
 export interface ICollageLayoutScreenProps {
   mediasUri: string[];
 }
@@ -214,12 +217,23 @@ export function CollageLayoutScreen(props: ICollageLayoutScreenProps) {
     }
   };
 
+  let width = Dimensions.get('screen').width;
+  let height = 500;
+  let allTextLayout = TextTopAndBottomLayout(width, height, 0);
+  let fistTextLayout = allTextLayout[0];
+  console.log(fistTextLayout.items);
   return (
     <GestureHandlerRootView style={styles.container}>
       <View style={[styles.layoutContainer]}>
-        <Text style={[styles.textStyle]}>
-          山是水的温柔，天是地的厮守，谁为谁而等候。
-        </Text>
+        <MoveResizeView
+          allItems={fistTextLayout.items}
+          item={fistTextLayout.items[0]}
+          onResizerSelected={(sender: ICollageItem) => {
+            console.log(sender);
+          }}
+        >
+          <EditableText text="山是水的温柔" />
+        </MoveResizeView>
         <RecordScreenZone style={[styles.collageContainer]}>
           <MediaCollage layout={defaultLayout5} />
         </RecordScreenZone>
@@ -262,30 +276,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   textStyle: {
-    top: 0,
-    left: 0,
-    position: 'absolute',
-    zIndex: 5,
     color: '#212121',
-    fontSize: 17,
-    fontStyle: 'italic',
-    fontWeight: '900',
-    fontFamily: 'Chalkduster',
+    fontSize: 40,
+    fontFamily: 'GeikaiSuiKou',
     padding: 10,
     textShadowColor: 'rgba(0,0,0,0.5)',
     textShadowRadius: 4,
     textShadowOffset: { width: 1, height: 1 },
-    transform: [
-      {
-        translateY: 10,
-      },
-      {
-        skewY: '0deg',
-      },
-      {
-        skewX: '0deg',
-      },
-    ],
   },
   collageContainer: {
     zIndex: 2,
