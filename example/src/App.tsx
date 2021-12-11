@@ -9,6 +9,13 @@ export default function App() {
     'https://www.popo8.com/host/data/202111/30/9/bbdadbf.jpg',
     'https://www.popo8.com/host/data/202111/30/5/9a238d0.jpg',
   ];
-  return <CollageLayoutScreen mediasUri={urls} />;
-  //return <ImageViewer />;
+  urls = [
+    'file:///storage/emulated/0/DCIM/Camera/20211205_160528.heic',
+    'file:///storage/emulated/0/DCIM/Camera/20211205_160539.heic',
+    'file:///storage/emulated/0/DCIM/Camera/20211205_160513.heic',
+    'file:///storage/emulated/0/DCIM/Camera/20211205_121645.heic',
+    'file:///storage/emulated/0/DCIM/Camera/20211205_121651.heic',
+  ];
+  //return <CollageLayoutScreen mediasUri={urls} />;
+  return <ImageViewer />;
 }

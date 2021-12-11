@@ -14,6 +14,7 @@ import {
   NativeSyntheticEvent,
   LayoutChangeEvent,
   View,
+  Image,
 } from 'react-native';
 import Animated, {
   useAnimatedGestureHandler,
@@ -37,6 +38,11 @@ const styles = StyleSheet.create({
     flex: 1,
     overflow: 'visible',
   },
+  image: {
+    flex: 1,
+    aspectRatio: 1,
+    backgroundColor: '#000',
+  },
 });
 
 export const ImageViewerV2 = (props: { url: string }) => {
@@ -54,8 +60,8 @@ export const ImageViewerV2 = (props: { url: string }) => {
   let currentMaxTranslateX = useSharedValue(0);
   let currentMaxTranslateY = useSharedValue(0);
 
-  let width = useSharedValue<number>(0);
-  let height = useSharedValue<number>(0);
+  let width = useSharedValue<number>(100);
+  let height = useSharedValue<number>(100);
   let srcWidth = useSharedValue<number>(0);
   let srcHeight = useSharedValue<number>(0);
 
@@ -153,7 +159,7 @@ export const ImageViewerV2 = (props: { url: string }) => {
   let imageHeight: number = 0;
 
   const onImageLayoutChange = (layout: LayoutChangeEvent) => {
-    //console.log(layout.nativeEvent.layout);
+    console.log('onImageLayoutChange', layout.nativeEvent.layout);
   };
   const onLayoutChange = (layout: LayoutChangeEvent) => {
     containerWidth = layout.nativeEvent.layout.width;
@@ -167,6 +173,7 @@ export const ImageViewerV2 = (props: { url: string }) => {
     );
   };
   const onImageLoaded = (evt: NativeSyntheticEvent<ImageLoadEventData>) => {
+    console.log('onImageLoaded', evt.nativeEvent.source);
     imageWidth = evt.nativeEvent.source.width;
     imageHeight = evt.nativeEvent.source.height;
     srcWidth.value = imageWidth;
@@ -245,6 +252,41 @@ export const ImageViewerV2 = (props: { url: string }) => {
     }
   };
 
+  const renderAnimateImage = () => {
+    return (
+      <Animated.Image
+        onLayout={onImageLayoutChange}
+        onLoadStart={() => {
+          console.log('onLoadStart');
+        }}
+        onLoadEnd={() => {
+          console.log('onLoadEnd');
+        }}
+        onError={(err) => {
+          console.log('onImageError', err.nativeEvent.error);
+        }}
+        onPartialLoad={() => {
+          console.log('onPartialLoad');
+        }}
+        onLoad={onImageLoaded}
+        style={[animatedStyles]}
+        source={{ uri: props.url }}
+      />
+    );
+  };
+
+  const renderTestImage = () => {
+    return (
+      <Image
+        style={[styles.image]}
+        onError={(error) => {
+          console.log(error.nativeEvent.error);
+        }}
+        source={{ uri: props.url }}
+      />
+    );
+  };
+  console.log('ImageViewerV2', props.url);
   return (
     <PanGestureHandler maxPointers={1} onGestureEvent={onPanGestureHandlerV2}>
       <Animated.View
@@ -259,12 +301,7 @@ export const ImageViewerV2 = (props: { url: string }) => {
             onGestureEvent={onPinchGestureHandler}
           >
             <Animated.View style={[styles.container]} collapsable={false}>
-              <Animated.Image
-                onLayout={onImageLayoutChange}
-                onLoad={onImageLoaded}
-                style={[animatedStyles]}
-                source={{ uri: props.url }}
-              />
+              {renderAnimateImage()}
             </Animated.View>
           </PinchGestureHandler>
         </View>
