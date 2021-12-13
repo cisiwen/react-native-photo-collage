@@ -133,7 +133,11 @@ export const CollageItem = (props: {
             }}
           >
             <Animated.View style={[mediaContainerStyle]}>
-              <ImageViewerV2 url={url} />
+              <ImageViewerV2
+                url={url}
+                sourceData={props.item}
+                itemRender={props.item.itemRenderer}
+              />
             </Animated.View>
           </TouchableNativeFeedback>
         </SwappableViewItem>

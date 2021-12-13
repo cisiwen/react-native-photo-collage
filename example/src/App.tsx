@@ -16,6 +16,6 @@ export default function App() {
     'file:///storage/emulated/0/DCIM/Camera/20211205_121645.heic',
     'file:///storage/emulated/0/DCIM/Camera/20211205_121651.heic',
   ];
-  //return <CollageLayoutScreen mediasUri={urls} />;
-  return <ImageViewer />;
+  return <CollageLayoutScreen mediasUri={urls} />;
+  //return <ImageViewer />;
 }

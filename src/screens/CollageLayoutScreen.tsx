@@ -6,6 +6,8 @@ import {
   View,
   Text,
   Pressable,
+  ImageStyle,
+  StyleProp,
 } from 'react-native';
 
 //import { ImageViewer } from './ImageViewer';
@@ -31,6 +33,7 @@ import { useRecordScreenZone } from '../components/ViewRecorder';
 import { MoveResizeView } from '../components/MoveResizeView';
 import { TextTopAndBottomLayout } from '../layouts/TextLayout2Item';
 import { EditableText } from '../components/EditableText';
+import { OnItemRenderItemLoaded } from 'react-native-photo-collage';
 export interface ICollageLayoutScreenProps {
   mediasUri: string[];
 }
@@ -64,8 +67,27 @@ export function CollageLayoutScreen(props: ICollageLayoutScreenProps) {
     items: collageLayoutToCollageItem(Layout5_W2W2W2W2W1(), w, h, borderW),
   };
 
+  const renderAnimateImage = (
+    url: string,
+    onLoaded: OnItemRenderItemLoaded,
+    c: StyleProp<Animated.AnimateStyle<StyleProp<any>>>
+  ) => {
+    return (
+      <Animated.Image
+        onLoad={(evt) => {
+          onLoaded(evt.nativeEvent.source);
+        }}
+        style={[c]}
+        source={{ uri: url }}
+      />
+    );
+  };
   defaultLayout5.items.forEach((a) => {
-    //console.log(a.resizerItem)
+    a.itemRenderer = (data: ICollageItem, b, c) => {
+      console.log('itemRenderer', data);
+      let result = renderAnimateImage(data.uri, b, c);
+      return result;
+    };
   });
   //assignValue(defaultLayout5.items);
   defaultLayout5.items.forEach((a, i) => {

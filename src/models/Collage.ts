@@ -1,4 +1,6 @@
+import { ReactNode } from 'react';
 import Animated from 'react-native-reanimated';
+import { ItemRender } from '../components/ImageViewerV2';
 
 export interface IPointStyleItem {
   height: Animated.SharedValue<number>;
@@ -76,6 +78,7 @@ export interface ICollageItem {
   onResizerSelected?: (item: ICollageItem) => void;
   element?: React.RefObject<Animated.View>;
 
+  itemRenderer?: ItemRender;
   sourceLayout: ICollageItemLayout;
   layout?: Animated.SharedValue<{
     width: number;
